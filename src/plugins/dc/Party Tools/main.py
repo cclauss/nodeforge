@@ -34,7 +34,7 @@ class Main(Plugin):
                 context.reply('Die must be between 1 and 500, ex. 5d24')
                 return
             
-        except Exception, e:
+        except Exception as e:
             context.reply('Parse Error ex. 5d24')
             return
         

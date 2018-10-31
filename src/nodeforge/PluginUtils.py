@@ -6,7 +6,7 @@ from nodeforge.PluginUtils import *
 
 """
 from Plugin import Plugin, Priority
-import sys, imp, os
+import sys, imp, os, types
 
 def comparePlugin(x,y):
     """

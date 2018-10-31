@@ -100,7 +100,8 @@ def loadModule(path, reload=False):
     # This can be overriden by os.chdir(). But, maybe the seperation between plugins, and working data is fine.
     
     # create the module
-    execfile(mod.__file__, mod.__dict__)
+    with open(mod.__file__) as in_file:
+        exec(in_file.read(), mod.__dict__)
     
     # remove the directory to clean it up now that we are done.
     sys.path.pop(0)

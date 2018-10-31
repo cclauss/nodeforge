@@ -2,6 +2,7 @@
 Core file for TCP/IP Clients
 """
 from __future__ import with_statement
+from __future__ import print_function
 
 import socket, sys
 
@@ -60,7 +61,7 @@ class Client(ClientFactory, LineReceiver):
         This is executed when a connection is successful.
         """
         
-        print '%s: Connected at %s' % (self, addr)
+        print('%s: Connected at %s' % (self, addr))
 
         # this line is necessary because some plugins need to know what
         # the protocol object is, which is only defined when 
@@ -78,7 +79,7 @@ class Client(ClientFactory, LineReceiver):
             plugin.onConnect()
     
     def clientConnectionFailed(self, connector, reason):
-        print 'Connection failed. Reason:', reason
+        print('Connection failed. Reason:', reason)
         
         for plugin in self.plugins:
             plugin.onConnectFailed(reason)
@@ -88,14 +89,14 @@ class Client(ClientFactory, LineReceiver):
         Called when a connection is lost.
         """
         
-        print >> sys.stderr, '%s: Disconnected.' % self
+        print('%s: Disconnected.' % self, file=sys.stderr)
         
         for plugin in self.plugins:
             plugin.onDisconnect(reason)
         
     
     def startedConnecting(self, connector):
-        print 'Started to connect.'
+        print('Started to connect.')
     
         
     def lineReceived(self, msg):
@@ -107,7 +108,7 @@ class Client(ClientFactory, LineReceiver):
         # I think this happens and should be ignored.
         if len(msg) == 0: return
         
-        print msg
+        print(msg)
         
         for each in self.plugins:
             each.onData(msg)

@@ -2,6 +2,7 @@
 An IRC parser.
 This is by no means complete.
 """
+from __future__ import print_function
 
 from nodeforge.PluginUtils import *
 from twisted.internet.task import LoopingCall
@@ -17,7 +18,7 @@ class Main(Plugin):
             string = string.encode('raw_unicode_escape')
         
         self.core.sendLine(string)
-        print '>>> %s' % string
+        print('>>> %s' % string)
         
     def privmsg(self, who, msg):
         """

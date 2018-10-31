@@ -1,3 +1,4 @@
+from __future__ import print_function
 # TV-Series Current Episode Lister 1.01
 # Date: 2008/04/28
 # Author: Amit.Belani@hotmail.com
@@ -32,6 +33,11 @@ from itertools import dropwhile, ifilter, islice, takewhile
 from datetime import date
 from time import sleep, strptime
 import locale
+
+try:
+    xrange          # Python 2
+except NameError:
+    xrange = range  # Python 3
 
 # Set locale
 # This is used for formatting numbers (particularly for grouping digits)
@@ -73,7 +79,7 @@ def getEps(title,max_len=1024,debug=False):
 				break
 			except:
 				if attempt<max_attempts:
-					if debug: print 'An error occurred while attempting to retrieve search results for "%s". %s attempts were made.'%(title,attempt)+'\n'
+					if debug: print('An error occurred while attempting to retrieve search results for "%s". %s attempts were made.'%(title,attempt)+'\n')
 					sleep(attempt*2)
 				else:
 					return 'An error occurred while attempting to retrieve search results for "%s". %s attempts were made.'%(title,attempt)
@@ -89,7 +95,7 @@ def getEps(title,max_len=1024,debug=False):
 		# Get episodes
 		i.update(s,'episodes')
 		s_title=s['long imdb title']
-		if (not s.has_key('episodes')) or len(s['episodes'])==0: return 'Episode info is unavailable for %s.'%s_title
+		if ('episodes' not in s) or len(s['episodes'])==0: return 'Episode info is unavailable for %s.'%s_title
 		s=sortedEpisodes(s)
 		if len(s)==0: return 'Episode info is unavailable for %s.'%s_title
 	
@@ -100,11 +106,11 @@ def getEps(title,max_len=1024,debug=False):
 		# Process date related info for episodes
 		date_today=date.today()
 		for ep_ind in xrange(len(s)):
-			if s[ep_ind].has_key('original air date'):
+			if 'original air date' in s[ep_ind]:
 				try:
 					s[ep_ind]['date']=strptime(s[ep_ind]['original air date'],'%d %B %Y')
 				except:	pass
-			if s[ep_ind].has_key('date'):
+			if 'date' in s[ep_ind]:
 				s[ep_ind]['date']=date(*s[ep_ind]['date'][0:3])
 				s[ep_ind]['age']=(s[ep_ind]['date']-date_today).days # Age is date delta in days
 				if s[ep_ind]['age']<0:
@@ -117,9 +123,9 @@ def getEps(title,max_len=1024,debug=False):
 	
 		# Print last 10 listed episodes (if debugging)
 		if debug:
-			print 'Last 10 listed episodes:\nS# Epi# Age   Episode Title'
-			for e in s[:10]: print '%s %s %s %s'%(str(e['season']).zfill(2)[:2],str(e['episode']).zfill(4),e.has_key('age') and str(e['age']).zfill(5) or ' '*5,e['title'].encode('latin-1'))
-			print
+			print('Last 10 listed episodes:\nS# Epi# Age   Episode Title')
+			for e in s[:10]: print('%s %s %s %s'%(str(e['season']).zfill(2)[:2],str(e['episode']).zfill(4),'age' in e and str(e['age']).zfill(5) or ' '*5,e['title'].encode('latin-1')))
+			print()
 	
 		# Declare convenient functions for use in generating output string
 		def getSE(e):
@@ -155,7 +161,7 @@ def getEps(title,max_len=1024,debug=False):
 			# Generate output string when next upcoming episode is available
 			e_out=e_out+'The next upcoming episode '+(e_out=='' and ('for '+s_title+' ') or '')+'is "'+e['title']+'"'+getSE(e)+'.'
 	
-			if e.has_key('age'):
+			if 'age' in e:
 				e_schedule= e['age']>1 and ('in %s days'%getAge(e)) or e['age']==1 and 'tomorrow' or e['age']==0 and 'today'
 				e_out=e_out+' It airs '+e_schedule+', '+getDate(e)+'.'
 				del e_schedule
@@ -163,7 +169,7 @@ def getEps(title,max_len=1024,debug=False):
 				e_out=e_out+' Its air date is unavailable.'
 	
 			if include_plot:
-				if e.has_key('plot') and e['plot']!='Related Links':
+				if 'plot' in e and e['plot']!='Related Links':
 					e_out=e_out+' Its plot is: '+e['plot']
 				elif e_out.endswith('Its air date is unavailable.'):
 					e_out=e_out.replace('Its air date is unavailable.','Its air date and plot are unavailable.')
@@ -224,10 +230,10 @@ def getEps_test(add_noplot=False):
 	#titles=('',) # For testing a single or limited number of TV-series
 
 	for title in titles:
-		print title+':\n'
-		print getEps(title,debug=False)+'\n'+'_'*72+'\n'
+		print(title+':\n')
+		print(getEps(title,debug=False)+'\n'+'_'*72+'\n')
 		if add_noplot:
-			print title+': '+getEps(title+' /noplot',debug=False)++'\n''_'*72+'\n'
+			print(title+': '+getEps(title+' /noplot',debug=False)++'\n''_'*72+'\n')
 
 # Run tests
 #getEps_test()

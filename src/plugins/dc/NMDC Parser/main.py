@@ -1,3 +1,4 @@
+from __future__ import print_function
 from nodeforge.PluginUtils import *
 from twisted.internet.task import LoopingCall
 
@@ -120,9 +121,9 @@ class Main(Plugin):
         
         try:
             self.core.sendLine(string)
-            print '>>> %s' % string
-        except Exception, e:
-            print e
+            print('>>> %s' % string)
+        except Exception as e:
+            print(e)
             
     def tell(self, target, msg):
         self.send('$To: %s From: %s $<%s> %s' % (target, self.nick, self.nick, msg))
